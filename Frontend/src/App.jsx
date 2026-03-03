@@ -5,6 +5,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
+import Navbar from "./components/Navbar";
 
 function AnimatedPage({ children }) {
   return (
@@ -23,7 +24,7 @@ function AnimatedPage({ children }) {
 export default function App() {
   const location = useLocation();
 
-  return (
+  return (  
     <div style={{ position: "relative" }}>
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
@@ -61,6 +62,7 @@ export default function App() {
           />
         </Routes>
       </AnimatePresence>
+      
     </div>
   );
 }

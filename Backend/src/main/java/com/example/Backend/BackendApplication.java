@@ -27,7 +27,7 @@ public class BackendApplication {
 						.email("admin@medisureai.com")
 						.password(passwordEncoder.encode("admin123"))
 						.role(Role.ADMIN)
-						.build();
+						.build();	
 				userRepository.save(admin);
 				log.info("Default admin user created - Username: admin, Password: admin123");
 				log.warn("IMPORTANT: Please change the default admin password after first login!");
