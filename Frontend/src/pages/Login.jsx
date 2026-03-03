@@ -1,20 +1,46 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
 import ParticleBackground from "../components/ParticleBackground";
+import { login } from "../services/api";
 import "./Auth.css";
 
 export default function Login() {
   const navigate = useNavigate();
   const { darkMode } = useTheme();
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = () => {
-    // Just simulate login
-    localStorage.setItem("user", "true");
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
 
-    // Notify navbar
-    window.dispatchEvent(new Event("storage"));
+    try {
+      const token = await login({ username, password });
+      
+      // Store token and user info
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", "true");
 
-    navigate("/dashboard");
+      // Notify navbar
+      window.dispatchEvent(new Event("storage"));
+
+      navigate("/dashboard");
+    } catch (err) {
+      // Handle error response - check if it's an object or string
+      const errorMsg = err.response?.data 
+        ? (typeof err.response.data === 'string' 
+            ? err.response.data 
+            : err.response.data.message || JSON.stringify(err.response.data))
+        : "Login failed. Please check your credentials.";
+      setError(errorMsg);
+      console.error("Login error:", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -24,33 +50,48 @@ export default function Login() {
       <div className="auth-card">
         <h2 className="auth-title">Welcome Back</h2>
 
-        <input
-          className="auth-input"
-          type="email"
-          placeholder="Email"
-        />
+        {error && <p style={{ color: 'red', marginBottom: '10px' }}>{error}</p>}
 
-        <input
-          className="auth-input"
-          type="password"
-          placeholder="Password"
-        />
+        <form onSubmit={handleLogin}>
+          <input
+            className="auth-input"
+            type="text"
+            placeholder="Username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            autoComplete="username"
+            required
+          />
 
-        <div className="auth-buttons">
-          <button
-            className="auth-button"
-            onClick={handleLogin}
-          >
-            Login
-          </button>
+          <input
+            className="auth-input"
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            autoComplete="current-password"
+            required
+          />
 
-          <button
-            className="auth-button cancel"
-            onClick={() => navigate("/")}
-          >
-            Cancel
-          </button>
-        </div>
+          <div className="auth-buttons">
+            <button
+              className="auth-button"
+              type="submit"
+              disabled={loading}
+            >
+              {loading ? "Logging in..." : "Login"}
+            </button>
+
+            <button
+              className="auth-button cancel"
+              type="button"
+              onClick={() => navigate("/")}
+              disabled={loading}
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
 
         <p
           className="auth-link"

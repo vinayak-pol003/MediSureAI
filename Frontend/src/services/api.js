@@ -41,4 +41,15 @@ export const getCompletedDocuments = async () => {
   return response.data;
 };
 
+// Authentication APIs (auth endpoints are at root level, not under /api)
+export const register = async (userData) => {
+  const response = await axios.post('http://localhost:8080/auth/register', userData);
+  return response.data;
+};
+
+export const login = async (credentials) => {
+  const response = await axios.post('http://localhost:8080/auth/login', credentials);
+  return response.data;
+};
+
 export default api;
