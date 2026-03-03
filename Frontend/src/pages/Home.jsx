@@ -2,7 +2,6 @@ import { useNavigate } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
 import ParticleBackground from "../components/ParticleBackground";
 import "./Home.css";
-
 export default function Home() {
   const navigate = useNavigate();
   const { darkMode, setDarkMode } = useTheme();
@@ -24,40 +23,6 @@ export default function Home() {
   return (
     <div className="home-container">
       <ParticleBackground darkMode={darkMode} />
-
-      <nav className="navbar">
-        <div className="logo"> MediSure AI</div>
-
-        <div className="nav-buttons">
-          <button
-            className="toggle-btn magnetic"
-            onMouseMove={handleMagnet}
-            onMouseLeave={resetMagnet}
-            onClick={() => setDarkMode(!darkMode)}
-          >
-            {darkMode ? "🌙 Dark" : "☀ Light"}
-          </button>
-
-          <button
-            className="nav-btn magnetic"
-            onMouseMove={handleMagnet}
-            onMouseLeave={resetMagnet}
-            onClick={() => navigate("/login")}
-          >
-            Login
-          </button>
-
-          <button
-            className="nav-btn primary magnetic"
-            onMouseMove={handleMagnet}
-            onMouseLeave={resetMagnet}
-            onClick={() => navigate("/register")}
-          >
-            Get Started
-          </button>
-        </div>
-      </nav>
-
       <section className="hero">
         <h1>
           AI-Powered Medical <br /> Document Intelligence

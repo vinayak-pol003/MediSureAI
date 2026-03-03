@@ -7,6 +7,16 @@ export default function Login() {
   const navigate = useNavigate();
   const { darkMode } = useTheme();
 
+  const handleLogin = () => {
+    // Just simulate login
+    localStorage.setItem("user", "true");
+
+    // Notify navbar
+    window.dispatchEvent(new Event("storage"));
+
+    navigate("/dashboard");
+  };
+
   return (
     <div className="auth-page">
       <ParticleBackground darkMode={darkMode} />
@@ -29,7 +39,7 @@ export default function Login() {
         <div className="auth-buttons">
           <button
             className="auth-button"
-            onClick={() => navigate("/dashboard")}
+            onClick={handleLogin}
           >
             Login
           </button>

@@ -1,62 +1,75 @@
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { useTheme } from "../context/ThemeContext";
-import ParticleBackground from "../components/ParticleBackground";
 
-
-export default function Home() {
+export default function Navbar() {
   const navigate = useNavigate();
   const { darkMode, setDarkMode } = useTheme();
 
-  const handleMagnet = (e) => {
-    const button = e.currentTarget;
-    const rect = button.getBoundingClientRect();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-    const x = e.clientX - rect.left - rect.width / 2;
-    const y = e.clientY - rect.top - rect.height / 2;
+  // Sync login state from localStorage
+  useEffect(() => {
+    const checkAuth = () => {
+      const user = localStorage.getItem("user");
+      setIsLoggedIn(!!user);
+    };
 
-    button.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px)`;
-  };
+    checkAuth();
 
-  const resetMagnet = (e) => {
-    e.currentTarget.style.transform = "translate(0px, 0px)";
+    // Listen for login/logout changes
+    window.addEventListener("storage", checkAuth);
+
+    return () => {
+      window.removeEventListener("storage", checkAuth);
+    };
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    setIsLoggedIn(false);
+    navigate("/");
   };
 
   return (
-    <div className="home-container">
-      <ParticleBackground darkMode={darkMode} />
+    <nav
+      className={`fixed top-0 left-0 w-full h-16 flex justify-between items-center px-10 z-50 transition-all duration-300 ${
+        darkMode
+          ? "bg-slate-900 text-white border-b border-white/10"
+          : "bg-white text-gray-900 border-b border-black/10"
+      }`}
+    >
+      <div
+        className="flex items-center gap-2 text-lg font-semibold cursor-pointer"
+        onClick={() => navigate("/")}
+      >
+        🏥 <span>MediSure AI</span>
+      </div>
 
-      <nav className="navbar">
-        <div className="logo"> MediSure AI</div>
+      <div className="flex items-center gap-4">
+        <button
+          onClick={() => setDarkMode(!darkMode)}
+          className="px-3 py-1 border rounded-md transition"
+        >
+          {darkMode ? "🌙" : "☀"}
+        </button>
 
-        <div className="nav-buttons">
+        {!isLoggedIn ? (
           <button
-            className="toggle-btn magnetic"
-            onMouseMove={handleMagnet}
-            onMouseLeave={resetMagnet}
-            onClick={() => setDarkMode(!darkMode)}
-          >
-            {darkMode ? "🌙 Dark" : "☀ Light"}
-          </button>
-
-          <button
-            className="nav-btn magnetic"
-            onMouseMove={handleMagnet}
-            onMouseLeave={resetMagnet}
             onClick={() => navigate("/login")}
+            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:opacity-90 transition"
           >
             Login
           </button>
-
+        ) : (
           <button
-            className="nav-btn primary magnetic"
-            onMouseMove={handleMagnet}
-            onMouseLeave={resetMagnet}
-            onClick={() => navigate("/register")}
+            onClick={handleLogout}
+            className="px-4 py-2 bg-red-500 text-white rounded-md hover:opacity-90 transition"
           >
-            Get Started
+            Logout
           </button>
-        </div>
-      </nav>
-    </div>
+        )}
+      </div>
+    </nav>
   );
 }

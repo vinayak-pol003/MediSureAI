@@ -49,7 +49,7 @@
 .auth-buttons {
   display: flex;
   flex-direction: column;
-  gap: 16px; 
+  gap: 16px; x
   margin-top: 10px;
 }
 

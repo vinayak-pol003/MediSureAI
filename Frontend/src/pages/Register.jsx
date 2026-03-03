@@ -7,6 +7,11 @@ export default function Register() {
   const navigate = useNavigate();
   const { darkMode } = useTheme();
 
+  const handleRegister = () => {
+    alert("Registration successful! Please login.");
+    navigate("/login");
+  };
+
   return (
     <div className="auth-page">
       <ParticleBackground darkMode={darkMode} />
@@ -35,7 +40,7 @@ export default function Register() {
         <div className="auth-buttons">
           <button
             className="auth-button"
-            onClick={() => navigate("/dashboard")}
+            onClick={handleRegister}
           >
             Register
           </button>

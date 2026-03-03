@@ -1,11 +1,11 @@
 import { Routes, Route, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
+import Navbar from "./components/Navbar";
 
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
-import Navbar from "./components/Navbar";
 
 function AnimatedPage({ children }) {
   return (
@@ -14,7 +14,7 @@ function AnimatedPage({ children }) {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-      style={{ position: "absolute", width: "100%" }}
+      style={{ minHeight: "100vh", width: "100%" }}
     >
       {children}
     </motion.div>
@@ -24,8 +24,11 @@ function AnimatedPage({ children }) {
 export default function App() {
   const location = useLocation();
 
-  return (  
+  return (
     <div style={{ position: "relative" }}>
+      {/* GLOBAL NAVBAR */}
+      <Navbar />
+
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
           <Route
@@ -62,7 +65,6 @@ export default function App() {
           />
         </Routes>
       </AnimatePresence>
-      
     </div>
   );
 }
