@@ -2,6 +2,7 @@ package com.example.Backend.controller;
 
 import com.example.Backend.dto.BillingRequest;
 import com.example.Backend.dto.BillingResponse;
+import com.example.Backend.dto.DoctorPatientLookupResponse;
 import com.example.Backend.dto.DoctorProfileRequest;
 import com.example.Backend.dto.DoctorProfileResponse;
 import com.example.Backend.dto.MedicalRecordRequest;
@@ -54,6 +55,13 @@ public class DoctorController {
     public ResponseEntity<List<PatientProfileResponse>> getMyPatients(Authentication authentication) {
         Long userId = resolveUserId(authentication);
         return ResponseEntity.ok(doctorService.getMyPatients(userId));
+    }
+
+    @GetMapping("/patients/lookup")
+    public ResponseEntity<DoctorPatientLookupResponse> lookupPatient(
+            @RequestParam(required = false) String mrn,
+            @RequestParam(required = false) String email) {
+        return ResponseEntity.ok(doctorService.lookupPatient(mrn, email));
     }
 
     // ── Medical records ──────────────────────────────────────────────────────

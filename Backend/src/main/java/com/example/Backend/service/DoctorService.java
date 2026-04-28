@@ -2,6 +2,7 @@ package com.example.Backend.service;
 
 import com.example.Backend.dto.BillingRequest;
 import com.example.Backend.dto.BillingResponse;
+import com.example.Backend.dto.DoctorPatientLookupResponse;
 import com.example.Backend.dto.DoctorProfileRequest;
 import com.example.Backend.dto.DoctorProfileResponse;
 import com.example.Backend.dto.DrugDTO;
@@ -177,6 +178,33 @@ public class DoctorService {
                 .toList();
     }
 
+    // ── Patient lookup (by MRN or email) ──────────────────────────────────────
+
+    @Transactional(readOnly = true)
+    public DoctorPatientLookupResponse lookupPatient(String mrn, String email) {
+        boolean hasMrn = mrn != null && !mrn.isBlank();
+        boolean hasEmail = email != null && !email.isBlank();
+        if (hasMrn == hasEmail) {
+            throw new IllegalArgumentException("Provide exactly one of mrn or email");
+        }
+
+        Patient patient = hasMrn
+                ? patientRepository.findByMrn(mrn.trim())
+                        .orElseThrow(() -> new EntityNotFoundException("No patient with mrn " + mrn))
+                : patientRepository.findByUserEmail(email.trim())
+                        .orElseThrow(() -> new EntityNotFoundException("No patient with email " + email));
+
+        Users user = patient.getUser();
+        return DoctorPatientLookupResponse.builder()
+                .userId(user != null ? user.getId() : null)
+                .mrn(patient.getMrn())
+                .name(patient.getName())
+                .age(patient.getAge())
+                .gender(patient.getGender())
+                .email(user != null ? user.getEmail() : null)
+                .build();
+    }
+
     // ── Billing ───────────────────────────────────────────────────────────────
 
     @Transactional
@@ -249,6 +277,7 @@ public class DoctorService {
         Users user = p.getUser();
         return PatientProfileResponse.builder()
                 .id(p.getId())
+                .mrn(p.getMrn())
                 .name(p.getName())
                 .age(p.getAge())
                 .gender(p.getGender())

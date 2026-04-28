@@ -42,6 +42,7 @@ public class PatientService {
     private final MedicalRecordRepository medicalRecordRepository;
     private final BillingRepository billingRepository;
     private final UserCredRepo userCredRepo;
+    private final MrnGeneratorService mrnGeneratorService;
 
     /**
      * Feature 2: Health Timeline
@@ -107,6 +108,10 @@ public class PatientService {
         Patient patient = patientRepository.findByUserId(userId)
                 .orElseGet(() -> Patient.builder().user(user).build());
 
+        if (patient.getMrn() == null || patient.getMrn().isBlank()) {
+            patient.setMrn(mrnGeneratorService.generateUnique());
+        }
+
         patient.setName(request.getName());
         patient.setAge(request.getAge());
         patient.setGender(request.getGender());
@@ -153,6 +158,7 @@ public class PatientService {
         Users user = p.getUser();
         return PatientProfileResponse.builder()
                 .id(p.getId())
+                .mrn(p.getMrn())
                 .name(p.getName())
                 .age(p.getAge())
                 .gender(p.getGender())

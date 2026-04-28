@@ -9,12 +9,11 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PatientProfileResponse {
-    private Long id;
+public class DoctorPatientLookupResponse {
+    private Long userId;
     private String mrn;
     private String name;
     private Integer age;
     private String gender;
-    private String username;
     private String email;
 }

@@ -25,6 +25,9 @@ public class Patient {
     @JoinColumn(name = "user_id", unique = true, nullable = false)
     private Users user;
 
+    @Column(name = "mrn", unique = true, nullable = true, length = 16, updatable = false)
+    private String mrn;
+
     private String name;
 
     private Integer age;
